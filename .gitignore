@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Node
+node_modules/
+dist/
+.vite/
+
+# Kotlin / Gradle
+build/
+.gradle/
+*.class
+
+# Entorno y secretos
+.env
+
+# Datos (base SQLite) y salida de pruebas
+01_backend/datos/
+# Perfil de Chrome con la sesión de Google (cookies): nunca al repositorio
+03_worker/datos/
+05_pruebas/salida/

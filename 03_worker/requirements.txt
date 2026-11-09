@@ -1,0 +1,9 @@
+# Worker de Radar
+fastapi
+uvicorn[standard]
+pydantic
+httpx
+# Reducir las imagenes antes de mandarlas a Gemini.
+Pillow
+# Fuente gratuita de anuncios: lee la Biblioteca de Meta con el Chrome instalado.
+playwright

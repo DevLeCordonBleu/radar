@@ -1,0 +1,11 @@
+HELP.md
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+.idea
+*.iml
+.vscode/
+.kotlin
+bin/
+out/
+datos/

@@ -1,0 +1,711 @@
+/**
+ * Base visual del panel.
+ *
+ * Tema oscuro único, con la misma paleta que la identidad de los videos
+ * (diapositivas y miniaturas que produce el worker): fondo azul noche, cian
+ * de acento y lima para lo que está bien. Sin librerías de UI: todo lo
+ * reutilizable (paneles, botones, chips, formularios, avisos) vive aquí y
+ * los componentes solo añaden lo propio.
+ */
+
+:root {
+  --fondo: #0b1220;
+  --panel: #121c33;
+  --panel-2: #172341;
+  --panel-3: #1c2a4d;
+  --borde: #22304f;
+  --borde-fuerte: #31446d;
+  --texto: #f8fafc;
+  --texto-suave: #94a3b8;
+  --texto-tenue: #64748b;
+
+  --cian: #22d3ee;
+  --cian-fondo: rgba(34, 211, 238, 0.12);
+  --lima: #a3e635;
+  --lima-fondo: rgba(163, 230, 53, 0.12);
+  --ambar: #facc15;
+  --ambar-fondo: rgba(250, 204, 21, 0.12);
+  --rojo: #f87171;
+  --rojo-fondo: rgba(248, 113, 113, 0.12);
+  --violeta: #a78bfa;
+  /* Series de los graficos de Medicion (validadas con el validador de dataviz contra --panel). */
+  --serie-leads: #0aa5c2;
+  --serie-conversaciones: #8b5cf6;
+  --serie-gasto: #7c8db5;
+  --violeta-fondo: rgba(167, 139, 250, 0.14);
+
+  --radio: 10px;
+  --radio-chico: 6px;
+  --sombra: 0 6px 24px rgba(0, 0, 0, 0.35);
+  --foco: 0 0 0 3px rgba(34, 211, 238, 0.55);
+  --fuente: 'Segoe UI', system-ui, -apple-system, Roboto, Arial, sans-serif;
+  --mono: 'Cascadia Code', Consolas, 'Courier New', monospace;
+
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  background: var(--fondo);
+  color: var(--texto);
+  font-family: var(--fuente);
+  font-size: 15px;
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+a {
+  color: var(--cian);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+h2 {
+  font-size: 1.12rem;
+  font-weight: 650;
+}
+h3 {
+  font-size: 0.98rem;
+  font-weight: 650;
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--foco);
+}
+
+::selection {
+  background: rgba(34, 211, 238, 0.35);
+}
+
+/* ───────────────────────── Estructura ───────────────────────── */
+
+.pagina {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 24px 24px 64px;
+}
+
+@media (max-width: 600px) {
+  .pagina {
+    padding: 16px 16px 48px;
+  }
+  .panel {
+    padding: 14px 14px;
+  }
+}
+
+.pagina-cabecera {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.pagina-cabecera p {
+  color: var(--texto-suave);
+  margin-top: 4px;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  padding: 18px 20px;
+}
+.panel + .panel {
+  margin-top: 16px;
+}
+/* Dentro de una rejilla el espacio lo pone el `gap`. */
+.rejilla > .panel + .panel {
+  margin-top: 0;
+}
+.panel-titulo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+.panel-titulo h2,
+.panel-titulo h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rejilla {
+  display: grid;
+  gap: 16px;
+}
+.rejilla {
+  --min-col: 20rem;
+}
+/*
+ * Como mucho 2 (o 3) columnas, pero cada una de al menos --min-col: si el hueco
+ * real (no la ventana) no alcanza, pasa sola a menos columnas. Así no se aprietan
+ * cuando el menú lateral y el índice del informe se comen el ancho.
+ */
+.rejilla-2 {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, max(var(--min-col, 20rem), calc((100% - 16px) / 2))), 1fr));
+}
+.rejilla-3 {
+  --min-col: 15rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, max(var(--min-col, 15rem), calc((100% - 32px) / 3))), 1fr));
+}
+@media (max-width: 960px) {
+  .rejilla-2,
+  .rejilla-3 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.fila {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.fila-fin {
+  justify-content: flex-end;
+}
+.espaciador {
+  flex: 1;
+}
+.pila > * + * {
+  margin-top: 12px;
+}
+
+.suave {
+  color: var(--texto-suave);
+}
+.tenue {
+  color: var(--texto-tenue);
+}
+.chico {
+  font-size: 0.85rem;
+}
+.mono {
+  font-family: var(--mono);
+}
+.num {
+  font-variant-numeric: tabular-nums;
+}
+.oculto-visual {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ───────────────────────── Botones ───────────────────────── */
+
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 36px;
+  padding: 7px 14px;
+  border-radius: var(--radio-chico);
+  border: 1px solid var(--borde-fuerte);
+  background: var(--panel-2);
+  color: var(--texto);
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background 0.12s,
+    border-color 0.12s,
+    color 0.12s;
+}
+.boton:hover:not(:disabled) {
+  background: var(--panel-3);
+  border-color: var(--texto-tenue);
+  text-decoration: none;
+}
+.boton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.boton svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+.boton-primario {
+  background: var(--cian);
+  border-color: var(--cian);
+  color: #06202a;
+}
+.boton-primario:hover:not(:disabled) {
+  background: #67e8f9;
+  border-color: #67e8f9;
+  color: #06202a;
+}
+.boton-exito {
+  background: var(--lima);
+  border-color: var(--lima);
+  color: #1a2e05;
+}
+.boton-exito:hover:not(:disabled) {
+  background: #bef264;
+  border-color: #bef264;
+  color: #1a2e05;
+}
+.boton-peligro {
+  background: transparent;
+  border-color: rgba(248, 113, 113, 0.55);
+  color: var(--rojo);
+}
+.boton-peligro:hover:not(:disabled) {
+  background: var(--rojo-fondo);
+  border-color: var(--rojo);
+}
+.boton-aviso {
+  background: transparent;
+  border-color: rgba(250, 204, 21, 0.55);
+  color: var(--ambar);
+}
+.boton-aviso:hover:not(:disabled) {
+  background: var(--ambar-fondo);
+  border-color: var(--ambar);
+}
+.boton-fantasma {
+  background: transparent;
+  border-color: transparent;
+  color: var(--texto-suave);
+}
+.boton-fantasma:hover:not(:disabled) {
+  background: var(--panel-2);
+  color: var(--texto);
+  border-color: var(--borde);
+}
+.boton-chico {
+  min-height: 28px;
+  padding: 3px 10px;
+  font-size: 0.82rem;
+}
+
+/* ───────────────────────── Formularios ───────────────────────── */
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+.campo > label,
+.campo > .etiqueta {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--texto-suave);
+}
+.campo-ayuda {
+  font-size: 0.78rem;
+  color: var(--texto-tenue);
+}
+.campo-pie {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 0.78rem;
+  color: var(--texto-tenue);
+}
+
+input[type='text'],
+input[type='email'],
+input[type='password'],
+input[type='number'],
+input[type='url'],
+input[type='date'],
+input[type='time'],
+input[type='datetime-local'],
+input[type='search'],
+select,
+textarea {
+  width: 100%;
+  background: var(--fondo);
+  color: var(--texto);
+  border: 1px solid var(--borde-fuerte);
+  border-radius: var(--radio-chico);
+  padding: 7px 10px;
+  font: inherit;
+  font-size: 0.92rem;
+  transition: border-color 0.12s;
+}
+input:hover,
+select:hover,
+textarea:hover {
+  border-color: var(--texto-tenue);
+}
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--cian);
+  box-shadow: var(--foco);
+}
+input:disabled,
+select:disabled,
+textarea:disabled,
+input:read-only:not([type='checkbox']):not([type='radio']),
+textarea:read-only {
+  background: var(--panel-2);
+  color: var(--texto-suave);
+}
+textarea {
+  resize: vertical;
+  min-height: 70px;
+  line-height: 1.45;
+}
+input[type='checkbox'],
+input[type='radio'] {
+  accent-color: var(--cian);
+  width: 16px;
+  height: 16px;
+}
+.casilla {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 0.92rem;
+}
+
+.formulario {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 14px;
+}
+.formulario .ancho-completo {
+  grid-column: 1 / -1;
+}
+/* Dos columnas que ocupan todo el ancho (campos largos). */
+.formulario-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+@media (max-width: 760px) {
+  .formulario-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ───────────────────────── Avisos ───────────────────────── */
+
+.aviso {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  border: 1px solid var(--borde-fuerte);
+  border-left-width: 4px;
+  border-radius: var(--radio-chico);
+  padding: 10px 14px;
+  background: var(--panel-2);
+  font-size: 0.92rem;
+}
+.aviso svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.aviso-cuerpo {
+  flex: 1;
+  min-width: 0;
+}
+.aviso-cuerpo strong {
+  display: block;
+  margin-bottom: 2px;
+}
+.aviso-info {
+  border-color: rgba(34, 211, 238, 0.45);
+  background: var(--cian-fondo);
+}
+.aviso-info svg {
+  color: var(--cian);
+}
+.aviso-exito {
+  border-color: rgba(163, 230, 53, 0.45);
+  background: var(--lima-fondo);
+}
+.aviso-exito svg {
+  color: var(--lima);
+}
+.aviso-ambar {
+  border-color: rgba(250, 204, 21, 0.5);
+  background: var(--ambar-fondo);
+}
+.aviso-ambar svg,
+.aviso-ambar strong {
+  color: var(--ambar);
+}
+.aviso-error {
+  border-color: rgba(248, 113, 113, 0.55);
+  background: var(--rojo-fondo);
+}
+.aviso-error svg,
+.aviso-error strong {
+  color: var(--rojo);
+}
+.aviso-fuerte {
+  border-width: 2px;
+  border-left-width: 6px;
+  padding: 14px 16px;
+}
+
+/* ───────────────────────── Chips ───────────────────────── */
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 650;
+  border: 1px solid var(--borde-fuerte);
+  background: var(--panel-2);
+  color: var(--texto-suave);
+  /* Una etiqueta larga parte línea antes que salirse de su tarjeta. */
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  line-height: 1.45;
+  padding-block: 3px;
+}
+.chip-cian {
+  color: var(--cian);
+  border-color: rgba(34, 211, 238, 0.45);
+  background: var(--cian-fondo);
+}
+.chip-lima {
+  color: var(--lima);
+  border-color: rgba(163, 230, 53, 0.45);
+  background: var(--lima-fondo);
+}
+.chip-ambar {
+  color: var(--ambar);
+  border-color: rgba(250, 204, 21, 0.5);
+  background: var(--ambar-fondo);
+}
+.chip-rojo {
+  color: var(--rojo);
+  border-color: rgba(248, 113, 113, 0.5);
+  background: var(--rojo-fondo);
+}
+.chip-violeta {
+  color: var(--violeta);
+  border-color: rgba(167, 139, 250, 0.5);
+  background: var(--violeta-fondo);
+}
+
+/* ───────────────────────── Tablas ───────────────────────── */
+
+.tabla-envoltura {
+  /* relative: el texto oculto para lectores de pantalla (absoluto) queda dentro y no ensancha la página. */
+  position: relative;
+  overflow-x: auto;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+}
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+.tabla th {
+  text-align: left;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--texto-suave);
+  font-weight: 650;
+  background: var(--panel-2);
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--borde);
+  white-space: nowrap;
+}
+.tabla td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--borde);
+  vertical-align: middle;
+}
+.tabla tr:last-child td {
+  border-bottom: none;
+}
+.tabla tbody tr:hover {
+  background: rgba(34, 211, 238, 0.04);
+}
+.tabla .derecha {
+  text-align: right;
+}
+/* Un estado o tipo en una celda («Leída», «En pausa») nunca parte en dos líneas. */
+.tabla td > .chip {
+  white-space: nowrap;
+}
+
+/* ───────────────────────── Barras ───────────────────────── */
+
+.barra {
+  height: 8px;
+  background: var(--fondo);
+  border: 1px solid var(--borde);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.barra-relleno {
+  height: 100%;
+  background: var(--cian);
+  border-radius: 999px;
+  transition: width 0.3s;
+}
+.barra-relleno.lima {
+  background: var(--lima);
+}
+.barra-relleno.ambar {
+  background: var(--ambar);
+}
+.barra-relleno.rojo {
+  background: var(--rojo);
+}
+
+/* ───────────────────────── Varios ───────────────────────── */
+
+.vacio {
+  text-align: center;
+  color: var(--texto-suave);
+  padding: 32px 16px;
+  border: 1px dashed var(--borde-fuerte);
+  border-radius: var(--radio);
+}
+
+.cargando {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--texto-suave);
+  padding: 24px 0;
+}
+
+.giratorio {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(34, 211, 238, 0.25);
+  border-top-color: var(--cian);
+  border-radius: 50%;
+  animation: girar 0.8s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes girar {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .giratorio {
+    animation-duration: 2.4s;
+  }
+}
+
+.separador {
+  border: none;
+  border-top: 1px solid var(--borde);
+  margin: 16px 0;
+}
+
+.lista-plana {
+  list-style: none;
+}
+
+.kbd {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  background: var(--fondo);
+  border: 1px solid var(--borde-fuerte);
+  border-radius: 4px;
+  padding: 1px 6px;
+}
+
+pre.bloque {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  background: var(--fondo);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-chico);
+  padding: 10px 12px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ───────────────────────── Tema claro ─────────────────────────
+ * El oscuro es el de base (arriba). `data-tema="claro"` lo pone composables/tema.ts.
+ * Los acentos se oscurecen para que el texto de color tenga contraste sobre blanco. */
+:root[data-tema='claro'] {
+  --fondo: #f3f5fa;
+  --panel: #ffffff;
+  --panel-2: #f1f4fa;
+  --panel-3: #e4e9f3;
+  --borde: #dce2ee;
+  --borde-fuerte: #c2cce0;
+  --texto: #0f172a;
+  --texto-suave: #475569;
+  --texto-tenue: #64748b;
+
+  --cian: #0e7490;
+  --cian-fondo: rgba(14, 116, 144, 0.1);
+  --lima: #4d7c0f;
+  --lima-fondo: rgba(77, 124, 15, 0.12);
+  --ambar: #a16207;
+  --ambar-fondo: rgba(161, 98, 7, 0.12);
+  --rojo: #dc2626;
+  --rojo-fondo: rgba(220, 38, 38, 0.1);
+  --violeta: #6d28d9;
+  --serie-leads: #0891b2;
+  --serie-conversaciones: #7c3aed;
+  --serie-gasto: #64748b;
+  --violeta-fondo: rgba(109, 40, 217, 0.1);
+
+  --sombra: 0 6px 24px rgba(15, 23, 42, 0.12);
+  --foco: 0 0 0 3px rgba(14, 116, 144, 0.45);
+
+  color-scheme: light;
+}
+:root[data-tema='claro'] .boton-primario,
+:root[data-tema='claro'] .boton-primario:hover:not(:disabled) {
+  color: #fff;
+}
+:root[data-tema='claro'] .boton-primario:hover:not(:disabled) {
+  background: #0c627a;
+  border-color: #0c627a;
+}
+:root[data-tema='claro'] .boton-exito,
+:root[data-tema='claro'] .boton-exito:hover:not(:disabled) {
+  color: #fff;
+}
+:root[data-tema='claro'] .boton-exito {
+  background: var(--lima);
+  border-color: var(--lima);
+}
